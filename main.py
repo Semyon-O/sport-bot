@@ -10,7 +10,6 @@ from aiogram.fsm.storage.memory import MemoryStorage
 
 import handlers.street_sport.StreetSport
 from handlers.street_sport.states import FilterUserStates
-from keyboards import menus_buttons, street_sports_buttons
 from keyboards import render_buttons, street_sports_buttons, menus_buttons
 
 bot = Bot(token=config.Tele_Token)

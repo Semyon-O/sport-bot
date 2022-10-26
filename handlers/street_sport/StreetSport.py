@@ -1,10 +1,10 @@
 from aiogram import Router
-from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.types import Message, ReplyKeyboardRemove
 from keyboards import render_buttons, street_sports_buttons
 from aiogram.filters.state import StateFilter
+from api import sport_street_points as ssp
 
 
 class FilterUserStates(StatesGroup):
@@ -50,6 +50,10 @@ async def get_enter_status(message: Message, state: FSMContext):
 async def confirm(message: Message, state: FSMContext):
     if message.text == "✅ Да ✅":
         await message.answer("Выполняю поиск")
+        await message.answer("Результаты")
+        await message.answer("Продолжить ли поиск?", reply_markup=render_buttons.create_reply_buttons_by(name_for_buttons=["✅ Да ✅", "❌ Нет ❌"]))
+        await state.set_state(FilterUserStates.Confirm)
+
     if message.text == "❌ Нет ❌":
         await message.answer("Возвращаю назад")
         await message.answer("Выберите район", reply_markup=render_buttons.create_reply_buttons_by(street_sports_buttons.ButtonNames.district))
@@ -60,4 +64,5 @@ async def return_to_main_menu():
     ...
 
 
-
+async def show_results():
+    ...

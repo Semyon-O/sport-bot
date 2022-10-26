@@ -1,13 +1,23 @@
 import dataclasses
-from enum import Enum
 from typing import *
 import requests
 
-"URL:  " \
-"https://classif.gov.spb.ru/api/public/version/3517/structure_version/579/" \
-"?page=1&number=&name=&activity=&address=&addressy=&metro=" \
-"&area=%D0%9A%D0%B0%D0%BB%D0%B8%D0%BD%D1%81%D0%BA%D0%B8%D0%B9&" \
-"phone=&site=&status=&time=&reach=&others=&data_display=&per_page=10"
+
+@dataclasses.dataclass
+class DataResponse():
+    number = Any
+    name = ...
+    activity = ...
+    address = ...
+    addressy = ...
+    coordinates = ...
+    metro = ...
+    area = ...
+    phone = ...
+    site = ...
+    status = ...
+    time = ...
+    reach = ...
 
 
 class BaseClassif:
@@ -31,26 +41,19 @@ class Street(BaseClassif):
     def __init__(self):
         BaseClassif.__init__(self, self._version, self._structure_version)
 
-    def make_request(self):
+    def make_request_url(self):
         response = requests.get(self.Url)
         return response.json()
 
     def __make_request_by(self, activity: str = "", district: str = ""):
-        "URL:  " \
-        "https://classif.gov.spb.ru/api/public/version/3517/structure_version/579/" \
-        "?page=1&number=&name=&activity=&address=&addressy=&metro=" \
-        "&area=%D0%9A%D0%B0%D0%BB%D0%B8%D0%BD%D1%81%D0%BA%D0%B8%D0%B9&" \
-        "phone=&site=&status=&time=&reach=&others=&data_display=&per_page=10"
-
 
         URl = self.Url + f"&area={district}" + f"&activity={activity}"
         response = requests.get(URl)
         return response.json()
 
-    def get_data_by(self, activity: str = "", district: str = ""):
+    def get_data_by(self, activity: str = "", district: str = "") -> "Iterable[DataResponse]":
         response = self.__make_request_by(activity=activity, district=district)
         for count in response["results"]:
-            print(count["row"])
             DataResponse.number = count["row"]["number"]
             DataResponse.name = count["row"]["name"]
             DataResponse.activity = count["row"]["activity"]
@@ -65,20 +68,4 @@ class Street(BaseClassif):
             DataResponse.time = count["row"]["time"]
             yield DataResponse
 
-
-@dataclasses.dataclass
-class DataResponse():
-    number = Any
-    name = ...
-    activity = ...
-    address = ...
-    addressy = ...
-    coordinates = ...
-    metro = ...
-    area = ...
-    phone = ...
-    site = ...
-    status = ...
-    time = ...
-    reach = ...
 
