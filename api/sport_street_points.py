@@ -51,7 +51,12 @@ class Street(BaseClassif):
         response = requests.get(URl)
         return response.json()
 
-    def get_data_by(self, activity: str = "", district: str = "") -> "Iterable[DataResponse]":
+    def __make_request_by_pages(self, activity: str = "", district: str = "", page: int = 0):
+        URl = self.Url + f"&area={district}" + f"&activity={activity}" + f"&page={page}" + f"&per_page=15"
+        response = requests.get(URl)
+        return response.json()
+
+    def get_all_data_by(self, activity: str = "", district: str = "") -> "Iterator[DataResponse]":
         response = self.__make_request_by(activity=activity, district=district)
         for count in response["results"]:
             DataResponse.number = count["row"]["number"]
@@ -68,4 +73,19 @@ class Street(BaseClassif):
             DataResponse.time = count["row"]["time"]
             yield DataResponse
 
-
+    def get_part_data_by(self,activity: str = "", district: str = "", page=0):
+        response = self.__make_request_by_pages(activity=activity, district=district, page=page)
+        for count in response["results"]:
+            DataResponse.number = count["row"]["number"]
+            DataResponse.name = count["row"]["name"]
+            DataResponse.activity = count["row"]["activity"]
+            DataResponse.address = count["row"]["address"]
+            DataResponse.addressy = count["row"]["addressy"]
+            DataResponse.coordinates = count["row"]["coordinates"]
+            DataResponse.metro = count["row"]["metro"]
+            DataResponse.phone = count["row"]["phone"]
+            DataResponse.site = count["row"]["site"]
+            DataResponse.status = count["row"]["status"]
+            DataResponse.area = count["row"]["area"]
+            DataResponse.time = count["row"]["time"]
+            yield DataResponse

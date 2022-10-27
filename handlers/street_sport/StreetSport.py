@@ -51,7 +51,24 @@ async def confirm(message: Message, state: FSMContext):
     if message.text == "✅ Да ✅":
         await message.answer("Выполняю поиск")
         await message.answer("Результаты")
-        await message.answer("Продолжить ли поиск?", reply_markup=render_buttons.create_reply_buttons_by(name_for_buttons=["✅ Да ✅", "❌ Нет ❌"]))
+        # TODO: Переделать вывод под новый метод
+        data = await state.get_data()
+        Street = ssp.Street()
+        response = Street.get_data_by(activity=data["type_sport"], district=data["district"])
+        for i in range(1):
+            result = next(response)
+            await message.answer(
+                f"Название: {result.name}\n"
+                f"Тип спорта {result.activity}\n"
+                f"Адрес: {result.address}\n"
+                f"Уточнение адреса: {result.addressy} \n"
+                f"Ближайшая станция метро: {result.metro}\n"
+                f"Контакты: {result.phone}\n"
+                f"Время работы: {result.time}\n"
+            )
+            print(result)
+
+        await message.answer("Продолжить поиск?", reply_markup=render_buttons.create_reply_buttons_by(name_for_buttons=["✅ Да ✅", "❌ Нет ❌"]))
         await state.set_state(FilterUserStates.Confirm)
 
     if message.text == "❌ Нет ❌":
