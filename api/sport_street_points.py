@@ -89,3 +89,10 @@ class Street(BaseClassif):
             DataResponse.area = count["row"]["area"]
             DataResponse.time = count["row"]["time"]
             yield DataResponse
+
+
+# st = Street()
+# count = 0
+# for i in st.get_all_data_by(activity="ОФП", district="Выборгский"):
+#     count+=1
+#     print(count)
